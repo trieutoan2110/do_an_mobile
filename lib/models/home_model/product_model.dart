@@ -9,7 +9,7 @@ class ProductModel {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
     code: json["code"],
-    newProduct: List<NewProduct>.from(json["newProduct"].map((x) => NewProduct.fromJson(x))),
+    newProduct:List<NewProduct>.from(json["newProduct"].map((x) => NewProduct.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

@@ -38,7 +38,7 @@ class User {
   String roleId;
   String rank;
   Role role;
-  UpdatedBy updatedBy;
+  UpdatedBy? updatedBy;
   String? address;
 
   User({
@@ -53,7 +53,7 @@ class User {
     required this.roleId,
     required this.rank,
     required this.role,
-    required this.updatedBy,
+    this.updatedBy,
     this.address,
   });
 
@@ -69,7 +69,7 @@ class User {
     roleId: json["role_id"],
     rank: json["rank"],
     role: Role.fromJson(json["role"]),
-    updatedBy: UpdatedBy.fromJson(json["updatedBy"]),
+    updatedBy: json['updatedBy'] == null ? null : UpdatedBy.fromJson(json["updatedBy"]),
     address: json["address"],
   );
 
@@ -85,7 +85,7 @@ class User {
     "role_id": roleId,
     "rank": rank,
     "role": role.toJson(),
-    "updatedBy": updatedBy.toJson(),
+    "updatedBy": updatedBy?.toJson(),
     "address": address,
   };
 }

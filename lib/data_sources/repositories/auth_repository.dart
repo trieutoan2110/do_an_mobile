@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:do_an_mobile/managers/api_urls.dart';
-import 'package:do_an_mobile/managers/repositories/app_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../api_urls.dart';
+import 'app_repository.dart';
 
 abstract class AuthRepository {
   Future<String> login(String email, String password);

@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:do_an_mobile/core/app_showtoast.dart';
-import 'package:do_an_mobile/managers/repositories/auth_repository.dart';
 import 'package:do_an_mobile/models/auth_model.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/login_view.dart';
 import 'package:do_an_mobile/views/widget/auth_btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+
+import '../../../data_sources/constants.dart';
+import '../../../data_sources/repositories/auth_repository.dart';
 
 class ForgotOtpView extends StatefulWidget {
   const ForgotOtpView({super.key, required this.email});
@@ -23,7 +25,7 @@ class _ForgotOtpViewState extends State<ForgotOtpView> {
     return Scaffold(
       appBar: AppBar (
         centerTitle: true,
-        title: const Text('Verification code'),
+        title: const Text(StringConstant.verification_title),
       ),
       body: _isLoading ? const Center(child: CircularProgressIndicator()) : Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -40,12 +42,12 @@ class _ForgotOtpViewState extends State<ForgotOtpView> {
                 },
                 keyboardType: TextInputType.phone
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 child: ButtonAuthWidget(
                     onTap: _sendOtp,
-                    text: 'Send',
+                    text: StringConstant.send_otp_button_title,
                     checkFullInfo: _checkInfo()
                 ),
               )

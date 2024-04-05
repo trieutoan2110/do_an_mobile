@@ -2,14 +2,15 @@ import 'dart:convert';
 
 import 'package:do_an_mobile/core/app_assets.dart';
 import 'package:do_an_mobile/core/app_showtoast.dart';
-import 'package:do_an_mobile/managers/repositories/auth_repository.dart';
+import 'package:do_an_mobile/data_sources/constants.dart';
 import 'package:do_an_mobile/models/auth_model.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/login_view.dart';
 import 'package:do_an_mobile/views/widget/auth_btn_widget.dart';
 import 'package:do_an_mobile/views/widget/email_input_widget.dart';
 import 'package:do_an_mobile/views/widget/password_input_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../data_sources/repositories/auth_repository.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -47,7 +48,7 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text(StringConstant.register_title),
         centerTitle: true,
       ),
       body: _isLoading? const Center(child:
@@ -66,22 +67,22 @@ class _RegisterViewState extends State<RegisterView> {
               ),
             ),
             EmailInputWidget(
-                hintText: 'Fullname',
+                hintText: StringConstant.fullname_hintText_title,
                 editingController: fullNameController,
                 icon: const Icon(Icons.person)
             ),
             EmailInputWidget(
-                hintText: 'Email',
+                hintText: StringConstant.email_hintText_title,
                 editingController: emailController,
                 icon: const Icon(Icons.person_2_outlined)
             ),
-            PasswordInputWidget(type: 'Password',
+            PasswordInputWidget(type: StringConstant.password_hintText_title,
                 isObscure: isObscure,
                 editingController: passwordController,
                 btn1: buttonIsObscure(const Icon(Icons.remove_red_eye)),
                 btn2: buttonIsObscure(const Icon(Icons.remove_red_eye_outlined))
             ),
-            PasswordInputWidget(type: 'Re-type password',
+            PasswordInputWidget(type: StringConstant.retype_password_hintText_title,
                 isObscure: isObscure,
                 editingController: retypePasswordController,
                 btn1: buttonIsObscure(const Icon(Icons.remove_red_eye)),
@@ -91,7 +92,7 @@ class _RegisterViewState extends State<RegisterView> {
                 margin: const EdgeInsets.only(top: 20),
                 child: ButtonAuthWidget(
                     onTap: _registerAct,
-                    text: 'Sign up',
+                    text: StringConstant.sign_up_button_title,
                     checkFullInfo: _checkInfo()
                 )
             ),
@@ -149,7 +150,7 @@ class _RegisterViewState extends State<RegisterView> {
         });
       });
     } else {
-      AppShowToast.showToast('Re-type password is incorrect');
+      AppShowToast.showToast(StringConstant.register_incorrect);
     }
   }
 }

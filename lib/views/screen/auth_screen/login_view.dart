@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:do_an_mobile/core/app_assets.dart';
 import 'package:do_an_mobile/core/app_showtoast.dart';
-import 'package:do_an_mobile/managers/repositories/auth_repository.dart';
+import 'package:do_an_mobile/data_sources/constants.dart';
 import 'package:do_an_mobile/models/auth_model.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/forgot_password_view.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/register_view.dart';
@@ -10,6 +10,9 @@ import 'package:do_an_mobile/views/widget/auth_btn_widget.dart';
 import 'package:do_an_mobile/views/widget/email_input_widget.dart';
 import 'package:do_an_mobile/views/widget/password_input_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../data_sources/repositories/auth_repository.dart';
 
 class loginView extends StatefulWidget {
   const loginView({super.key});
@@ -38,8 +41,8 @@ class _loginViewState extends State<loginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Log in'),
+        //automaticallyImplyLeading: false,
+        title: const Text(StringConstant.log_in_title),
         centerTitle: true,
       ),
       body: Container(
@@ -56,12 +59,12 @@ class _loginViewState extends State<loginView> {
                 ),
               ),
               EmailInputWidget(
-                  hintText: 'Email',
+                  hintText: StringConstant.email_hintText_title,
                   editingController: emailController,
                   icon: const Icon(Icons.person_2_outlined)
               ),
               PasswordInputWidget(
-                type: 'Password',
+                type: StringConstant.password_hintText_title,
                 isObscure: isObscure,
                 editingController: passwordController,
                 btn1: buttonIsObscure(const Icon(Icons.remove_red_eye)),
@@ -72,14 +75,14 @@ class _loginViewState extends State<loginView> {
                 child: TextButton(
                   onPressed: () {
                     _forgotAct();
-                  }, child: Text('Forgot password?'),
+                  }, child: const Text(StringConstant.forgot_password_button_title),
                 ),
               ),
               Container(
                   margin: const EdgeInsets.only(top: 5),
                   child: ButtonAuthWidget(
                       onTap: _loginAct,
-                      text: 'Log in',
+                      text: StringConstant.sign_in_button_title,
                       checkFullInfo: _checkFullInfo())),
               Container(
                 margin: const EdgeInsets.only(right: 5),
@@ -91,7 +94,7 @@ class _loginViewState extends State<loginView> {
                       onPressed: () {
                         _registerAct();
                       },
-                      child: const Text('Register'),
+                      child: const Text(StringConstant.register_button_title),
                     )
                   ],
                 ),
@@ -132,12 +135,14 @@ class _loginViewState extends State<loginView> {
 
     });
     Future.delayed(const Duration(seconds: 0)).then((_) {
-      AuthRepositoryImpl.shared.login(email, password).then((value) {
+      AuthRepositoryImpl.shared.login(email, password).then((value) async {
         AuthModel user = AuthModel.fromJson(jsonDecode(value));
         if (user.code == 200) {
-
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString(StringConstant.key_token, user.token!);
+          print(prefs.getString('token'));
         } else {
-          AppShowToast.showToast('email or password is incorrect');
+          AppShowToast.showToast(StringConstant.login_incorrect);
         }
       });
     });

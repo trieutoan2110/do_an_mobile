@@ -1,6 +1,8 @@
-import 'package:do_an_mobile/managers/api_urls.dart';
-import 'package:do_an_mobile/managers/repositories/app_repository.dart';
+
 import 'package:http/http.dart' as http;
+
+import '../api_urls.dart';
+import 'app_repository.dart';
 
 abstract class ProductRepository {
   Future<String> getProductCategory();
@@ -32,6 +34,7 @@ class ProductReposityImpl extends ProductRepository {
         .sendRequest(RequestMethod.get, url, false)
         .timeout(const Duration(seconds: 30))
         .then((http.Response response) {
+      //print(response.body);
       return response.body;
     }).catchError((onError) {
       throw Exception('failed to load data error');
@@ -40,7 +43,7 @@ class ProductReposityImpl extends ProductRepository {
 
   @override
   Future<String> getProductCategory() {
-    String url = '$domainName$productBestRateEP';
+    String url = '$domainName$productCategoryEP';
     return AppRespository.shared
         .sendRequest(RequestMethod.get, url, false)
         .timeout(const Duration(seconds: 30))
