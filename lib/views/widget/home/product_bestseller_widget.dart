@@ -48,7 +48,7 @@ class ProductBestSellerWidget extends StatelessWidget {
                 lineHeight: 14,
                 percent: stock/quantity,
                 barRadius: const Radius.circular(7),
-                center: Text('SOLD $stock',
+                center: Text('$stock SOLD',
                   style: const TextStyle (
                     fontWeight: FontWeight.w600,
                     color: Colors.white,

@@ -1,15 +1,20 @@
-import 'dart:convert';
 import 'package:do_an_mobile/models/home_model/product_category_model.dart';
 import 'package:do_an_mobile/models/home_model/product_model.dart';
-import 'package:do_an_mobile/views/widget/product_best_rate_widget.dart';
-import 'package:do_an_mobile/views/widget/product_bestseller_widget.dart';
-import 'package:do_an_mobile/views/widget/product_category_widget.dart';
-import 'package:do_an_mobile/views/widget/product_featured_widget.dart';
+import 'package:do_an_mobile/providers/home_provider.dart';
+import 'package:do_an_mobile/views/screen/auth_screen/login_view.dart';
+import 'package:do_an_mobile/views/screen/main_screen/product_detail_screen.dart';
+import 'package:do_an_mobile/views/widget/home/product_best_rate_widget.dart';
+import 'package:do_an_mobile/views/widget/home/product_bestseller_widget.dart';
+import 'package:do_an_mobile/views/widget/home/product_category_widget.dart';
+import 'package:do_an_mobile/views/widget/home/product_featured_widget.dart';
+import 'package:do_an_mobile/views/widget/loading_widget.dart';
 import 'package:flutter/material.dart';
-// import 'package:html_unescape/html_unescape.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data_sources/constants.dart';
-import '../../../data_sources/repositories/product_repository.dart';
+import '../../../providers/AuthProvider.dart';
+import '../../../providers/cart_provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -19,6 +24,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  late HomeProvider homeProvider;
+  AuthProvider? authProvider;
+  CartProvider? cartProvider;
   ProductModel? productFeatureds;
   ProductModel? productBestSellers;
   ProductModel? productBestRates;
@@ -26,62 +34,50 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(const Duration(seconds: 0)).then((_) {
-      ProductReposityImpl.shared.getProductFeatured().then((value) {
-        setState(() {
-          productFeatureds = ProductModel.fromJson(jsonDecode(value));
-        });
-      });
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider!.checkLoginStatus();
+    getDataHome();
+    cartProvider = Provider.of<CartProvider>(context, listen: false);
+    cartProvider!.setAllProductCart();
+  }
 
-      ProductReposityImpl.shared.getProductCategory().then((value) {
-        setState(() {
-          productCategoryModel =
-              ProductCategoryModel.fromJson(jsonDecode(value));
-        });
-      });
-
-      ProductReposityImpl.shared.getProductBestSeller().then((value) {
-        setState(() {
-          productBestSellers = ProductModel.fromJson(jsonDecode(value));
-        });
-      });
-
-      ProductReposityImpl.shared.getProductBestRate().then((value) {
-        setState(() {
-          productBestRates = ProductModel.fromJson(jsonDecode(value));
-        });
-      });
-    });
+  void getDataHome() {
+    homeProvider.getAllProductCategory();
+    homeProvider.getAllProductBestSeller();
+    homeProvider.getAllProductBestRate();
+    homeProvider.getAllProductFeatured();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(),
-      drawer: Drawer(),
+      // drawer: Drawer(),
       body: ListView(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          const Text(StringConstant.product_category_title),
-          ListProductCategory(),
-          const Text(StringConstant.product_best_sellers_title),
-          ListProductBestSeller(),
-          const Text(StringConstant.product_best_rates_title),
-          ListProductBestRate(),
-          const Text(StringConstant.product_featureds_title),
           const SizedBox(height: 10),
-          ListProductFeatured()
+          titleOfProducts(StringConstant.product_category_title),
+          listProductCategory(),
+          titleOfProducts(StringConstant.product_best_sellers_title),
+          listProductBestSeller(),
+          titleOfProducts(StringConstant.product_best_rates_title),
+          listProductBestRate(),
+          titleOfProducts(StringConstant.product_featureds_title),
+          const SizedBox(height: 10),
+          listProductFeatured()
         ],
       ),
     );
   }
 
   PreferredSizeWidget customAppBar() {
-    return AppBar (
+    return AppBar(
+      shadowColor: Colors.grey,
       title: const Text(
         StringConstant.home_title,
         style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
@@ -92,116 +88,182 @@ class _HomeViewState extends State<HomeView> {
           onPressed: () {},
           icon: const Icon(Icons.search, size: 35),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.shopping_cart_outlined, size: 35),
-        )
       ],
     );
   }
 
-  Widget ListProductCategory() {
-    return Container(
-      width: null,
-      height: 150,
-      child: productCategoryModel == null
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: productCategoryModel!.productCategorys.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final productCategory = productCategoryModel!.productCategorys;
-                String imageUrl = productCategory[index].image;
-                String categoryName = productCategory[index].title;
-                return ProductCategoryWidget(
-                    imageUrl: imageUrl, categoryName: categoryName);
-              },
-            ),
-    );
+  Widget listProductCategory() {
+    return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
+      return SizedBox(
+        width: null,
+        height: 150,
+        child: homeProvider.listProductCategory.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: homeProvider.listProductCategory.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final productCategory =
+                      homeProvider.listProductCategory[index];
+                  String imageUrl = productCategory.image;
+                  String categoryName = productCategory.title;
+                  return ProductCategoryWidget(
+                      imageUrl: imageUrl, categoryName: categoryName);
+                },
+              ),
+      );
+    });
   }
 
-  Widget ListProductBestSeller() {
-    return productBestSellers == null
-        ? const Center(child: CircularProgressIndicator())
-        : Container(
-            width: null,
-            height: 250,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: productBestSellers!.newProduct.length,
+  Widget listProductBestSeller() {
+    return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
+      return homeProvider.listProductBestSeller.isEmpty
+          ? const LoadingWidget()
+          : SizedBox(
+              width: null,
+              height: 250,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: homeProvider.listProductBestSeller.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final productBestSeller =
+                      homeProvider.listProductBestSeller[index];
+                  String productID = productBestSeller.id;
+                  String imageUrl = productBestSeller.images[0];
+                  int discount = productBestSeller.discountPercent;
+                  int price = productBestSeller.minPrice;
+                  int stock = 0;
+                  int quantity = 0;
+                  for (Group newGroup in productBestSeller.newGroup) {
+                    stock += newGroup.stock;
+                    quantity += newGroup.quantity;
+                  }
+                  return InkWell(
+                      onTap: () {
+                        _clickDetailProduct(productID);
+                      },
+                      child: ProductBestSellerWidget(
+                          imageUrl: imageUrl,
+                          discount: '-$discount%',
+                          price: '\$$price',
+                          stock: stock,
+                          quantity: quantity));
+                },
+              ),
+            );
+    });
+  }
+
+  Widget listProductFeatured() {
+    return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
+      return homeProvider.listProductFeatured.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : GridView.builder(
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: homeProvider.listProductFeatured.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 0.7,
+                crossAxisCount: 2,
+              ),
               itemBuilder: (context, index) {
-                final productBestSeller = productBestSellers!.newProduct;
-                String imageUrl = productBestSeller[index].images[0];
-                int discount = productBestSeller[index].discountPercent;
-                int price = productBestSeller[index].minPrice;
-                int stock = 0;
-                int quantity = 0;
-                for (Group newGroup in productBestSeller[index].newGroup) {
-                  stock += newGroup.stock;
-                  quantity += newGroup.quantity;
-                }
-                return ProductBestSellerWidget(
+                final productFeatured = homeProvider.listProductFeatured[index];
+                String productID = productFeatured.id;
+                String imageUrl = productFeatured.images[0];
+                int price = productFeatured.minPrice;
+                int discount = productFeatured.discountPercent;
+                String title = productFeatured.title;
+                int buyed = productFeatured.buyed;
+                return InkWell(
+                  onTap: () {
+                    _clickDetailProduct(productID);
+                  },
+                  child: ProductFeaturedWidget(
+                    price: '\$$price',
                     imageUrl: imageUrl,
                     discount: '-$discount%',
-                    price: 'đ$price.000',
-                    stock: stock,
-                    quantity: quantity);
+                    description: title,
+                    buyed: buyed,
+                  ),
+                );
               },
-            ),
-          );
+            );
+    });
   }
 
-  Widget ListProductFeatured() {
-    return productFeatureds == null
-        ? const Center(child: CircularProgressIndicator())
-        : GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: productFeatureds!.newProduct.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 0.7,
-              crossAxisCount: 2,
-            ),
-            itemBuilder: (context, index) {
-              final productFeatured = productFeatureds!.newProduct[index];
-              String imageUrl = productFeatured.images[0];
-              int price = productFeatured.minPrice;
-              int discount = productFeatured.discountPercent;
-              String title = productFeatured.title;
-              return ProductFeaturedWidget(
-                  price: 'đ$price.000',
-                  imageUrl: imageUrl,
-                  discount: '-$discount%',
-                  description: title);
-            },
-          );
+  Widget listProductBestRate() {
+    return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
+      return homeProvider.listProductBestRate.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : SizedBox(
+              width: null,
+              height: 250,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: homeProvider.listProductBestRate.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final productBestRate =
+                      homeProvider.listProductBestRate[index];
+                  String productID = productBestRate.id;
+                  String imageUrl = productBestRate.images[0];
+                  int discount = productBestRate.discountPercent;
+                  int price = productBestRate.minPrice;
+                  double rate = productBestRate.rate;
+                  return InkWell(
+                    onTap: () {
+                      _clickDetailProduct(productID);
+                    },
+                    child: ProductBestRateWidget(
+                        imageUrl: imageUrl,
+                        discount: '-$discount%',
+                        price: '\$$price',
+                        rate: rate),
+                  );
+                },
+              ),
+            );
+    });
   }
 
-  Widget ListProductBestRate() {
-    return productBestRates == null
-        ? const Center(child: CircularProgressIndicator())
-        : Container(
-      width: null,
-      height: 250,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: productBestRates!.newProduct.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final productBestRate = productBestRates!.newProduct[index];
-          String imageUrl = productBestRate.images[0];
-          int discount = productBestRate.discountPercent;
-          int price = productBestRate.minPrice;
-          double rate = productBestRate.rate;
-          return ProductBestRateWidget (
-              imageUrl: imageUrl,
-              discount: '-$discount%',
-              price: 'đ$price.000',
-              rate: rate);
-        },
+  Widget titleOfProducts(String title) {
+    return Container(
+      margin: const EdgeInsets.only(left: 10),
+      child: Text(
+        title,
+        style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            overflow: TextOverflow.ellipsis),
       ),
     );
+  }
+
+  void _clickDetailProduct(String productID) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLogin = false;
+    if (prefs.getBool(StringConstant.is_login) != null) {
+      isLogin = prefs.getBool(StringConstant.is_login)!;
+    }
+    await Future.delayed(const Duration(seconds: 0));
+    if (context.mounted) {
+      if (isLogin) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ProductDetailView(
+                      productID: productID, homeProvider: homeProvider),
+            ));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const loginView()
+            ));
+      }
+    }
   }
 }

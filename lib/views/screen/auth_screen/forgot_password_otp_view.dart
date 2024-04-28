@@ -27,7 +27,7 @@ class _ForgotOtpViewState extends State<ForgotOtpView> {
         centerTitle: true,
         title: const Text(StringConstant.verification_title),
       ),
-      body: _isLoading ? const Center(child: CircularProgressIndicator()) : Container(
+      body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         child: Center (
           child: Column(
@@ -48,7 +48,7 @@ class _ForgotOtpViewState extends State<ForgotOtpView> {
                 child: ButtonAuthWidget(
                     onTap: _sendOtp,
                     text: StringConstant.send_otp_button_title,
-                    checkFullInfo: _checkInfo()
+                    checkFullInfo: _checkInfo(), isLoading: _isLoading,
                 ),
               )
             ],

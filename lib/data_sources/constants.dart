@@ -1,6 +1,8 @@
 class StringConstant {
   //SharedPreferences
   static const String key_token = 'token';
+  static const String is_login = 'isLogin';
+  static const String is_logout = 'isLogout';
 
   //AppBar title
   ////AppBar authen
@@ -37,4 +39,26 @@ class StringConstant {
   static const String product_best_sellers_title = 'Product best seller';
   static const String product_best_rates_title = 'Product best rate';
   static const String product_featureds_title = 'Product Featured';
+
+  static const String buy_button_title = 'Buy now';
+  static const String description = 'Description';
+  static const String quantity = 'Quantity';
+  static const String delivery_address = 'Delivery Address';
+  static const String voucher = 'Voucher';
+  static const String paymet_details = 'Payment Details';
+  static const String total_payment = 'Total Payment';
+  static const String place_order = 'Place Order';
+
+  static const String to_pay = 'To Pay';
+  static const String to_ship = 'To Ship';
+  static const String to_receive = 'To Receive';
+  static const String to_rate = 'To Rate';
+
+  static const String delivery_process = 'Delivery process';
+
+}
+
+enum TransLanguage {
+  vi,
+  en
 }

@@ -4,12 +4,15 @@ import 'package:do_an_mobile/core/app_assets.dart';
 import 'package:do_an_mobile/core/app_showtoast.dart';
 import 'package:do_an_mobile/data_sources/constants.dart';
 import 'package:do_an_mobile/models/auth_model.dart';
+import 'package:do_an_mobile/providers/AuthProvider.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/forgot_password_view.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/register_view.dart';
+import 'package:do_an_mobile/views/screen/main_screen/main_screen.dart';
 import 'package:do_an_mobile/views/widget/auth_btn_widget.dart';
 import 'package:do_an_mobile/views/widget/email_input_widget.dart';
 import 'package:do_an_mobile/views/widget/password_input_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data_sources/repositories/auth_repository.dart';
@@ -22,13 +25,18 @@ class loginView extends StatefulWidget {
 }
 
 class _loginViewState extends State<loginView> {
+
+  late AuthProvider _authProvider;
+
   late TextEditingController emailController = TextEditingController();
   late TextEditingController passwordController = TextEditingController();
   late bool isObscure = true;
+  late bool isLoading = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
     emailController.addListener(() {
       _checkFullInfo();
     });
@@ -38,18 +46,27 @@ class _loginViewState extends State<loginView> {
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading?
+    Container(color: Colors.grey.shade500,child: const Center(child: CircularProgressIndicator()))
+        : Scaffold(
       appBar: AppBar(
         //automaticallyImplyLeading: false,
         title: const Text(StringConstant.log_in_title),
         centerTitle: true,
       ),
       body: Container(
-        margin: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Center(
                 child: SizedBox(
@@ -83,7 +100,7 @@ class _loginViewState extends State<loginView> {
                   child: ButtonAuthWidget(
                       onTap: _loginAct,
                       text: StringConstant.sign_in_button_title,
-                      checkFullInfo: _checkFullInfo())),
+                      checkFullInfo: _checkFullInfo(), isLoading: isLoading)),
               Container(
                 margin: const EdgeInsets.only(right: 5),
                 child: Row(
@@ -109,11 +126,7 @@ class _loginViewState extends State<loginView> {
     return IconButton(
         onPressed: () {
           setState(() {
-            if (isObscure == true) {
-              isObscure = false;
-            } else {
-              isObscure = true;
-            }
+            isObscure = !isObscure;
           });
         }, icon: icon
     );
@@ -131,19 +144,26 @@ class _loginViewState extends State<loginView> {
   void _loginAct() async {
     String email = emailController.text;
     String password = passwordController.text;
-    setState(() {
-
-    });
+    isLoading = true;
+    setState(() {});
     Future.delayed(const Duration(seconds: 0)).then((_) {
       AuthRepositoryImpl.shared.login(email, password).then((value) async {
         AuthModel user = AuthModel.fromJson(jsonDecode(value));
         if (user.code == 200) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString(StringConstant.key_token, user.token!);
-          print(prefs.getString('token'));
+          prefs.setBool(StringConstant.is_login, true);
+          _authProvider.updateLoginStatus();
+          Future.delayed(const Duration(seconds: 1));
+          if (context.mounted) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MainView()));
+          }
         } else {
           AppShowToast.showToast(StringConstant.login_incorrect);
         }
+        isLoading = false;
+        setState(() {});
       });
     });
   }

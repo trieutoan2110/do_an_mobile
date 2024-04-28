@@ -11,8 +11,8 @@ abstract class ProductRepository {
   Future<String> getProductBestRate();
 }
 
-class ProductReposityImpl extends ProductRepository {
-  static final shared = ProductReposityImpl();
+class ProductRepositoryImpl extends ProductRepository {
+  static final shared = ProductRepositoryImpl();
 
   @override
   Future<String> getProductBestRate() {
@@ -67,4 +67,15 @@ class ProductReposityImpl extends ProductRepository {
     });
   }
 
+  Future<String> getProductDetail(String productID) {
+    String url = '$domainName$productDetailEP$productID';
+    return AppRespository.shared
+        .sendRequest(RequestMethod.get, url, false)
+        .timeout(const Duration(seconds: 30))
+        .then((http.Response response) {
+          return response.body;
+    }).catchError((onError) {
+      throw Exception(onError);
+    });
+  }
 }

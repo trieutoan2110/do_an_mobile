@@ -2,8 +2,7 @@ import 'package:do_an_mobile/data_sources/constants.dart';
 import 'package:do_an_mobile/views/screen/main_screen/cart_screen.dart';
 import 'package:do_an_mobile/views/screen/main_screen/home_screen.dart';
 import 'package:do_an_mobile/views/screen/main_screen/info_screen.dart';
-import 'package:do_an_mobile/views/screen/wishlist_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:do_an_mobile/views/screen/main_screen/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainView extends StatefulWidget {
@@ -34,10 +33,11 @@ class _MainViewState extends State<MainView> {
           });
         },
       ),
-      body: IndexedStack (
-        index: selectedPageIndex,
-        children: const [HomeView(), CartView(), WishlistView(), InfomationView()],
-      )
+      // body: IndexedStack (
+      //   index: selectedPageIndex,
+      //   children: const [HomeView(), CartView(), WishlistView(), InformationView()],
+      // )
+      body: const [HomeView(), CartView(), WishlistView(), InformationView()][selectedPageIndex],
     );
   }
 }

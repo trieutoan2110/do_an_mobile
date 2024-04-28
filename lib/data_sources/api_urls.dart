@@ -11,3 +11,8 @@ const String productCategoryEP = 'home/productCategory';
 const String productBestSellerEP = 'home/productBestSellers';
 const String productFeaturedEP = 'home/productFeatureds';
 const String productBestRateEP = 'home/productBestRate';
+
+const String productDetailEP = 'products/detail/';
+
+const String cartEP = 'cart';
+const String addCartEP = 'cart/add/';

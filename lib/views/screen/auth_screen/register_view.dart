@@ -51,9 +51,7 @@ class _RegisterViewState extends State<RegisterView> {
         title: const Text(StringConstant.register_title),
         centerTitle: true,
       ),
-      body: _isLoading? const Center(child:
-        CircularProgressIndicator()
-      ) : Container(
+      body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column (
           mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +91,7 @@ class _RegisterViewState extends State<RegisterView> {
                 child: ButtonAuthWidget(
                     onTap: _registerAct,
                     text: StringConstant.sign_up_button_title,
-                    checkFullInfo: _checkInfo()
+                    checkFullInfo: _checkInfo(), isLoading: _isLoading,
                 )
             ),
           ],
@@ -106,12 +104,9 @@ class _RegisterViewState extends State<RegisterView> {
     return IconButton(
         onPressed: () {
           setState(() {});
-          if (isObscure == true) {
-            isObscure = false;
-          } else {
-            isObscure = true;
-          }
-        }, icon: icon
+          isObscure = !isObscure;
+        },
+        icon: icon
     );
   }
 

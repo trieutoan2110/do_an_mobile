@@ -35,9 +35,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           centerTitle: true,
           title: const Text(StringConstant.forgot_password_title),
         ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Container(
+        body: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
@@ -50,7 +48,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       child: ButtonAuthWidget(
                           onTap: _authEmail,
                           text: StringConstant.send_email_button_title,
-                          checkFullInfo: _checkInfo()),
+                          checkFullInfo: _checkInfo(), isLoading: _isLoading)
                     ),
                   ],
                 ),

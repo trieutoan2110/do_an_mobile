@@ -6,13 +6,15 @@ class ProductFeaturedWidget extends StatelessWidget {
     required this.price,
     required this.imageUrl,
     required this.discount,
-    required this.description
+    required this.description,
+    required this.buyed
   }
   );
   final String imageUrl;
   final String discount;
   final String price;
   final String description;
+  final int buyed;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +36,26 @@ class ProductFeaturedWidget extends StatelessWidget {
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 2),
-              Text(price,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17
+              Container(
+                padding: const EdgeInsets.only(left: 5, right: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(price,
+                      style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17
+                      ),
+                    ),
+                    Text('$buyed sold',
+                        style: const TextStyle(
+                            // backgroundColor: Colors.black,
+                            // color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400
+                        ))
+                  ],
                 ),
               )
             ],
