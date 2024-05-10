@@ -1,9 +1,12 @@
 import 'package:do_an_mobile/data_sources/constants.dart';
+import 'package:do_an_mobile/providers/AuthProvider.dart';
+import 'package:do_an_mobile/views/screen/auth_screen/login_view.dart';
 import 'package:do_an_mobile/views/screen/main_screen/cart_screen.dart';
 import 'package:do_an_mobile/views/screen/main_screen/home_screen.dart';
 import 'package:do_an_mobile/views/screen/main_screen/info_screen.dart';
 import 'package:do_an_mobile/views/screen/main_screen/wishlist_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -15,6 +18,16 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
 
   int selectedPageIndex = 0;
+  late AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    _authProvider.checkLoginStatus();
+    _authProvider.getUserInfor();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +50,7 @@ class _MainViewState extends State<MainView> {
       //   index: selectedPageIndex,
       //   children: const [HomeView(), CartView(), WishlistView(), InformationView()],
       // )
-      body: const [HomeView(), CartView(), WishlistView(), InformationView()][selectedPageIndex],
+      body: [HomeView(), _authProvider.isLogin? CartView() : loginView(), _authProvider.isLogin? WishlistView() : loginView(), InformationView()][selectedPageIndex],
     );
   }
 }

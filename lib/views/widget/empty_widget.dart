@@ -11,7 +11,7 @@ class EmptyWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/images/empty.png', height: 150, width: 150,),
-            const Text('Your cart is empty',
+            const Text('Empty',
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w500

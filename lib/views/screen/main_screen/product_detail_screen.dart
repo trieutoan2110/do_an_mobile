@@ -4,6 +4,7 @@ import 'package:do_an_mobile/views/screen/main_screen/buy_product_screen.dart';
 import 'package:do_an_mobile/views/widget/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 
@@ -13,12 +14,12 @@ import '../../../models/home_model/product_detail_model.dart';
 class ProductDetailView extends StatefulWidget {
   const ProductDetailView({super.key,
     required this.productID,
-    required this.homeProvider
+    // required this.homeProvider
   });
 
   final String productID;
 
-  final HomeProvider homeProvider;
+  // final HomeProvider homeProvider;
 
   @override
   State<ProductDetailView> createState() => _ProductDetailViewState();
@@ -29,11 +30,13 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   late List<Group> _listGroup = [];
   late String imageUrl;
   late String titleProduct;
+  late HomeProvider _homeProvider;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _homeProvider = Provider.of<HomeProvider>(context, listen: false);
     getDataDetail();
   }
 
@@ -43,8 +46,8 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   }
 
   void getDataDetail() {
-    widget.homeProvider.resetProductDetail();
-    widget.homeProvider.getProductDetail(widget.productID);
+    _homeProvider.resetProductDetail();
+    _homeProvider.getProductDetail(widget.productID);
   }
 
   @override
@@ -118,14 +121,40 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                                 height: 10,
                               ),
                               rating(productDetail.rate),
+                              const SizedBox(height: 20),
+                              const Divider(height: 1, color: Colors.black26),
+                              const Text(StringConstant.description,
+                              style: TextStyle(
+                               fontSize: 22,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              ),
                               const SizedBox(height: 10),
-                              const Text(StringConstant.description),
+                              SizedBox(
+                                height: 300,
+                                child: SingleChildScrollView(
+                                  child: HtmlWidget(
+                                    productDetail.description,
+                                  ),
+                                ),
+                              ),
+                              const Divider(height: 10, color: Colors.black26, thickness: 1),
+                              const Text(StringConstant.feedback,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                               const SizedBox(height: 10),
-                              // Text(parse(productDetail.description)
-                              //     .documentElement!
-                              //     .text)
-                              HtmlWidget(
-                                productDetail.description
+                              Visibility(
+                                visible: _homeProvider.listFeedback.isEmpty ? false : true,
+                                child: Column (
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    for (var feedback in _homeProvider.listFeedback)
+                                      _buildComment(feedback.fullName, feedback.comment ?? '', feedback.rate.toDouble())
+                                  ],
+                                )
                               )
                             ],
                           ),
@@ -136,12 +165,6 @@ class _ProductDetailViewState extends State<ProductDetailView> {
           }),
           Padding(
             padding: const EdgeInsets.only(left: 10, top: 30),
-            // child: InkWell(
-            //   onTap: () {
-            //     Navigator.pop(context);
-            //   },
-            //   child: const Icon(Icons.arrow_back_ios_new),
-            // ),
             child: IconButton (
               onPressed: () {
                 Navigator.pop(context);
@@ -162,7 +185,9 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              _homeProvider.addProductToWishList(widget.productID);
+            },
             child: Container(
               height: 60,
               width: MediaQuery.of(context).size.width / 5,
@@ -179,11 +204,11 @@ class _ProductDetailViewState extends State<ProductDetailView> {
           InkWell(
             onTap: () {
               // add list new group
-              widget.homeProvider.setListGroup(widget.homeProvider.productDetail!.newGroup);
+              _homeProvider.setListGroup(_homeProvider.productDetail!.newGroup);
               _listGroup.clear();
-              _listGroup.addAll(widget.homeProvider.listGroup);
-              imageUrl = widget.homeProvider.productDetail!.images[0];
-              titleProduct = widget.homeProvider.productDetail!.title;
+              _listGroup.addAll(_homeProvider.listGroup);
+              imageUrl = _homeProvider.productDetail!.images[0];
+              titleProduct = _homeProvider.productDetail!.title;
               selectProductType();
             },
             child: Container(
@@ -219,12 +244,49 @@ class _ProductDetailViewState extends State<ProductDetailView> {
     );
   }
 
+  Widget _buildComment(String username, String feedback, double rate) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: Column (
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(username, style: const TextStyle (
+            fontWeight: FontWeight.w500,
+            fontSize: 20
+          ),),
+          const SizedBox(height: 10),
+          Text(feedback),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const Text('${StringConstant.rate}: '),
+              RatingBar.builder(
+                initialRating: rate,
+                direction: Axis.horizontal,
+                itemCount: 5,
+                itemSize: 25,
+                itemBuilder: (context, index) {
+                  return const Icon(Icons.star, color: Colors.yellow, size: 20);
+                },
+                onRatingUpdate: (value) {
+
+                },
+              ),
+            ],
+          ),
+          const Divider(height: 10, thickness: 1, color: Colors.black26,),
+
+        ],
+      ),
+    );
+  }
+
   void selectProductType() {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (context) {
-        return Container(
+        return SizedBox(
             height: MediaQuery.of(context).size.height / 4 * 3,
             child: BuyProductScreen(listGroup: _listGroup, imageUrl: imageUrl, titleProduct: titleProduct, productID: widget.productID,));
       },

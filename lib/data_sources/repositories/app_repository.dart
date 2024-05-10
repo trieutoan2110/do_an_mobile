@@ -33,6 +33,13 @@ class AppRespository {
     if (method == RequestMethod.post) {
       return http.post(Uri.parse(url), headers: header, body: jsonEncode(body));
     }
+    if (method == RequestMethod.delete) {
+      return http.delete(Uri.parse(url), headers: header);
+    }
+    if (method == RequestMethod.patch) {
+      return http.patch(Uri.parse(url), headers: header, body: jsonEncode(body));
+    }
+
     return http.get(Uri.parse(url), headers: header);
   }
 }

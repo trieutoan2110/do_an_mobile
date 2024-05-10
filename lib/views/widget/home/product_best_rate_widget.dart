@@ -41,6 +41,8 @@ class ProductBestRateWidget extends StatelessWidget {
                 ),
               ),
               RatingBar.builder(
+                allowHalfRating: true,
+                ignoreGestures: true,
                 initialRating: rate,
                 direction: Axis.horizontal,
                 itemCount: 5,

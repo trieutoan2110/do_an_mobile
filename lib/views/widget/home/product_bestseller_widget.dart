@@ -42,17 +42,20 @@ class ProductBestSellerWidget extends StatelessWidget {
                   fontSize: 17
                 ),
               ),
-              LinearPercentIndicator (
-                backgroundColor: Colors.red.shade100,
-                progressColor: Colors.red,
-                lineHeight: 14,
-                percent: stock/quantity,
-                barRadius: const Radius.circular(7),
-                center: Text('$stock SOLD',
-                  style: const TextStyle (
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    fontSize: 12
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: LinearPercentIndicator (
+                  backgroundColor: Colors.red.shade100,
+                  progressColor: Colors.red,
+                  lineHeight: 12,
+                  percent: stock/quantity,
+                  barRadius: const Radius.circular(6),
+                  center: Text('$stock SOLD',
+                    style: const TextStyle (
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      fontSize: 10
+                    ),
                   ),
                 ),
               )

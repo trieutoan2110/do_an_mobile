@@ -213,7 +213,7 @@ class _BuyProductScreenState extends State<BuyProductScreen> {
                               productID: widget.productID,
                               titleProduct: widget.titleProduct,
                               quantity: quantity,
-                              price: newPrice)
+                              price: newPrice, childTitle: childTitle!)
                         ],
                       )
                   )

@@ -3,6 +3,18 @@ class StringConstant {
   static const String key_token = 'token';
   static const String is_login = 'isLogin';
   static const String is_logout = 'isLogout';
+  static const String username = 'username';
+  static const String phone_number = 'phone_number';
+  static const String address = 'address';
+  static const String ranking = 'ranking';
+  static const String avatarUrl = 'avatar';
+  static const String email = 'email';
+
+  //infor screen
+  static const name = 'name';
+  static const phone = 'phone';
+
+  static const cloudName = 'debcojldf';
 
   //AppBar title
   ////AppBar authen
@@ -18,6 +30,7 @@ class StringConstant {
 
   //Button authen
   static const String sign_in_button_title = "Sign In";
+  static const String log_out_button_title = 'Log out';
   static const String sign_up_button_title = "Sign Up";
   static const String register_button_title = 'Register';
   static const String forgot_password_button_title = "Forgot password?";
@@ -42,23 +55,30 @@ class StringConstant {
 
   static const String buy_button_title = 'Buy now';
   static const String description = 'Description';
+  static const String feedback = 'Feedback';
+  static const String rate = 'Rate';
   static const String quantity = 'Quantity';
   static const String delivery_address = 'Delivery Address';
   static const String voucher = 'Voucher';
   static const String paymet_details = 'Payment Details';
   static const String total_payment = 'Total Payment';
   static const String place_order = 'Place Order';
+  static const String submit = 'Submit';
+  static const String product_quantity = 'Product Quantity';
+  static const String terrible = 'Terrible';
+  static const String poor = 'Poor';
+  static const String fair = 'Fair';
+  static const String good = 'Good';
+  static const String amazing = 'Amazing';
 
   static const String to_pay = 'To Pay';
   static const String to_ship = 'To Ship';
   static const String to_receive = 'To Receive';
   static const String to_rate = 'To Rate';
+  static const String complete = 'Complete';
+  static const String cancelled = 'Cancelled';
+  static const String return_refund = 'Return Refund';
 
   static const String delivery_process = 'Delivery process';
-
-}
-
-enum TransLanguage {
-  vi,
-  en
+  static const String order_success = 'Order Success';
 }

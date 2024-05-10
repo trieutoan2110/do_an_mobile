@@ -27,7 +27,7 @@ class AuthModel {
 }
 
 class User {
-  String id;
+  String? id;
   String fullName;
   String email;
   String password;
@@ -37,12 +37,11 @@ class User {
   String status;
   String roleId;
   String rank;
-  Role role;
-  UpdatedBy? updatedBy;
+  Role? role;
   String? address;
 
   User({
-    required this.id,
+    this.id,
     required this.fullName,
     required this.email,
     required this.password,
@@ -52,8 +51,7 @@ class User {
     required this.status,
     required this.roleId,
     required this.rank,
-    required this.role,
-    this.updatedBy,
+    this.role,
     this.address,
   });
 
@@ -69,7 +67,6 @@ class User {
     roleId: json["role_id"],
     rank: json["rank"],
     role: Role.fromJson(json["role"]),
-    updatedBy: json['updatedBy'] == null ? null : UpdatedBy.fromJson(json["updatedBy"]),
     address: json["address"],
   );
 
@@ -84,8 +81,7 @@ class User {
     "status": status,
     "role_id": roleId,
     "rank": rank,
-    "role": role.toJson(),
-    "updatedBy": updatedBy?.toJson(),
+    "role": role?.toJson(),
     "address": address,
   };
 }
@@ -111,29 +107,5 @@ class Role {
     "_id": id,
     "title": title,
     "permissions": List<dynamic>.from(permissions.map((x) => x)),
-  };
-}
-
-class UpdatedBy {
-  String accountId;
-  String fullName;
-  DateTime updatedAt;
-
-  UpdatedBy({
-    required this.accountId,
-    required this.fullName,
-    required this.updatedAt,
-  });
-
-  factory UpdatedBy.fromJson(Map<String, dynamic> json) => UpdatedBy(
-    accountId: json["account_id"],
-    fullName: json["fullName"],
-    updatedAt: DateTime.parse(json["updatedAt"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "account_id": accountId,
-    "fullName": fullName,
-    "updatedAt": updatedAt.toIso8601String(),
   };
 }

@@ -1,8 +1,11 @@
 import 'package:do_an_mobile/models/home_model/product_category_model.dart';
 import 'package:do_an_mobile/models/home_model/product_model.dart';
+import 'package:do_an_mobile/providers/checkout_provider.dart';
 import 'package:do_an_mobile/providers/home_provider.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/login_view.dart';
+import 'package:do_an_mobile/views/screen/main_screen/category_screen.dart';
 import 'package:do_an_mobile/views/screen/main_screen/product_detail_screen.dart';
+import 'package:do_an_mobile/views/screen/main_screen/search_screen.dart';
 import 'package:do_an_mobile/views/widget/home/product_best_rate_widget.dart';
 import 'package:do_an_mobile/views/widget/home/product_bestseller_widget.dart';
 import 'package:do_an_mobile/views/widget/home/product_category_widget.dart';
@@ -14,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data_sources/constants.dart';
 import '../../../providers/AuthProvider.dart';
-import '../../../providers/cart_provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -26,7 +28,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   late HomeProvider homeProvider;
   AuthProvider? authProvider;
-  CartProvider? cartProvider;
+  late CheckOutProvider _checkOutProvider;
+  // CartProvider? cartProvider;
   ProductModel? productFeatureds;
   ProductModel? productBestSellers;
   ProductModel? productBestRates;
@@ -35,19 +38,20 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
+    _checkOutProvider = Provider.of<CheckOutProvider>(context, listen: false);
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider!.getUserInfor();
     authProvider!.checkLoginStatus();
     getDataHome();
-    cartProvider = Provider.of<CartProvider>(context, listen: false);
-    cartProvider!.setAllProductCart();
   }
 
   void getDataHome() {
-    homeProvider.getAllProductCategory();
+    homeProvider.getAllCategory();
     homeProvider.getAllProductBestSeller();
     homeProvider.getAllProductBestRate();
     homeProvider.getAllProductFeatured();
+    _checkOutProvider.getListDiscount();
   }
 
   @override
@@ -85,7 +89,9 @@ class _HomeViewState extends State<HomeView> {
       centerTitle: true,
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchProductScreen(listCategory: homeProvider.listProductCategory),));
+          },
           icon: const Icon(Icons.search, size: 35),
         ),
       ],
@@ -99,7 +105,7 @@ class _HomeViewState extends State<HomeView> {
         height: 150,
         child: homeProvider.listProductCategory.isEmpty
             ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
+            :  ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: homeProvider.listProductCategory.length,
                 shrinkWrap: true,
@@ -108,8 +114,14 @@ class _HomeViewState extends State<HomeView> {
                       homeProvider.listProductCategory[index];
                   String imageUrl = productCategory.image;
                   String categoryName = productCategory.title;
-                  return ProductCategoryWidget(
-                      imageUrl: imageUrl, categoryName: categoryName);
+                  String id = productCategory.id;
+                  return InkWell(
+                    onTap: () {
+                      _clickCategory(id, productCategory.title);
+                    },
+                    child: ProductCategoryWidget(
+                        imageUrl: imageUrl, categoryName: categoryName),
+                  );
                 },
               ),
       );
@@ -242,6 +254,33 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _clickDetailProduct(String productID) async {
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // bool isLogin = false;
+    // if (prefs.getBool(StringConstant.is_login) != null) {
+    //   isLogin = prefs.getBool(StringConstant.is_login)!;
+    // }
+    bool isLogin = authProvider!.isLogin;
+    await Future.delayed(const Duration(seconds: 0));
+    if (context.mounted) {
+      if (isLogin) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ProductDetailView(
+                      productID: productID),
+            ));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const loginView()
+            ));
+      }
+    }
+  }
+
+  void _clickCategory(String id, String title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLogin = false;
     if (prefs.getBool(StringConstant.is_login) != null) {
@@ -254,8 +293,7 @@ class _HomeViewState extends State<HomeView> {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  ProductDetailView(
-                      productID: productID, homeProvider: homeProvider),
+                  CategoryView(categoryParent: id, categoryTitle: title),
             ));
       } else {
         Navigator.push(

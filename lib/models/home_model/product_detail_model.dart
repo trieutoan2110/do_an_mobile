@@ -1,6 +1,6 @@
 class ProductDetailModel {
   int code;
-  NewProduct newProduct;
+  NewProductDetail newProduct;
   List<NewFeedback> newFeedbacks;
 
   ProductDetailModel({
@@ -11,7 +11,7 @@ class ProductDetailModel {
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) => ProductDetailModel(
     code: json["code"],
-    newProduct: NewProduct.fromJson(json["newProduct"]),
+    newProduct: NewProductDetail.fromJson(json["newProduct"]),
     newFeedbacks: List<NewFeedback>.from(json["newFeedbacks"].map((x) => NewFeedback.fromJson(x))),
   );
 
@@ -58,7 +58,7 @@ class NewFeedback {
   };
 }
 
-class NewProduct {
+class NewProductDetail {
   String id;
   String title;
   String description;
@@ -77,7 +77,7 @@ class NewProduct {
   int buyed;
   String productCategoryTitle;
 
-  NewProduct({
+  NewProductDetail({
     required this.id,
     required this.title,
     required this.description,
@@ -97,7 +97,7 @@ class NewProduct {
     required this.productCategoryTitle,
   });
 
-  factory NewProduct.fromJson(Map<String, dynamic> json) => NewProduct(
+  factory NewProductDetail.fromJson(Map<String, dynamic> json) => NewProductDetail(
     id: json["_id"],
     title: json["title"],
     description: json["description"],

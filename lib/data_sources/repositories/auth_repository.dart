@@ -1,9 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../api_urls.dart';
 import 'app_repository.dart';
 
@@ -13,6 +8,8 @@ abstract class AuthRepository {
   Future<String> register(String fullname, String email, String password);
   Future<String> forgotEmail(String email);
   Future<String> forgotOtp(String email, String otp);
+  Future<String> editProfile(String email, String username, String address, String phone, String imageUrl);
+  Future<String> uploadImage(String avatarUrl);
 }
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -96,6 +93,38 @@ class AuthRepositoryImpl extends AuthRepository {
         .then((http.Response response) => response.body)
         .catchError((onError) {
       throw Exception('failed to load data $onError');
+    });
+  }
+
+  @override
+  Future<String> editProfile(String email, String username, String address, String phone, String imageUrl) {
+    String url = '$domainName$editProfileEP';
+    Map<String, dynamic> body = {
+      "email": email,
+      "fullName": username,
+      "address": address,
+      "phone": phone,
+      'avatar': imageUrl
+    };
+    return AppRespository.shared
+        .sendRequest(RequestMethod.patch, url, true, body: body)
+        .timeout(const Duration(seconds: 10))
+        .then((http.Response response) {
+          return response.body;
+    });
+  }
+
+  @override
+  Future<String> uploadImage(String avatarUrl) {
+    String url = '$domainName$uploadImageEP';
+    Map<String, dynamic> body = {
+      'avatar': avatarUrl
+    };
+    return AppRespository.shared
+        .sendRequest(RequestMethod.patch, url, true, body: body)
+        .timeout(const Duration(seconds: 10))
+        .then((http.Response response) {
+      return response.body;
     });
   }
 }

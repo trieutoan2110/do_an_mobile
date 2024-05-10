@@ -9,6 +9,7 @@ abstract class ProductRepository {
   Future<String> getProductBestSeller();
   Future<String> getProductFeatured();
   Future<String> getProductBestRate();
+  Future<String> getProductFormCategory(String categoryParent);
 }
 
 class ProductRepositoryImpl extends ProductRepository {
@@ -76,6 +77,17 @@ class ProductRepositoryImpl extends ProductRepository {
           return response.body;
     }).catchError((onError) {
       throw Exception(onError);
+    });
+  }
+
+  @override
+  Future<String> getProductFormCategory(String categoryParent) {
+    String url = '$domainName$categoryEP$categoryParent';
+    return AppRespository.shared
+        .sendRequest(RequestMethod.get, url, true)
+        .timeout(const Duration(seconds: 10))
+        .then((http.Response response) {
+       return response.body;
     });
   }
 }

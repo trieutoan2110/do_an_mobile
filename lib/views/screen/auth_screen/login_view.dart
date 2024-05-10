@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:do_an_mobile/core/app_assets.dart';
 import 'package:do_an_mobile/core/app_showtoast.dart';
 import 'package:do_an_mobile/data_sources/constants.dart';
-import 'package:do_an_mobile/models/auth_model.dart';
+import 'package:do_an_mobile/presenters/login_presenter.dart';
 import 'package:do_an_mobile/providers/AuthProvider.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/forgot_password_view.dart';
 import 'package:do_an_mobile/views/screen/auth_screen/register_view.dart';
@@ -13,9 +11,6 @@ import 'package:do_an_mobile/views/widget/email_input_widget.dart';
 import 'package:do_an_mobile/views/widget/password_input_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../data_sources/repositories/auth_repository.dart';
 
 class loginView extends StatefulWidget {
   const loginView({super.key});
@@ -24,10 +19,10 @@ class loginView extends StatefulWidget {
   State<loginView> createState() => _loginViewState();
 }
 
-class _loginViewState extends State<loginView> {
+class _loginViewState extends State<loginView> implements LoginViewContract{
 
   late AuthProvider _authProvider;
-
+  late LoginPresenter _presenter;
   late TextEditingController emailController = TextEditingController();
   late TextEditingController passwordController = TextEditingController();
   late bool isObscure = true;
@@ -36,6 +31,7 @@ class _loginViewState extends State<loginView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _presenter = LoginPresenter(this);
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
     emailController.addListener(() {
       _checkFullInfo();
@@ -58,7 +54,7 @@ class _loginViewState extends State<loginView> {
     Container(color: Colors.grey.shade500,child: const Center(child: CircularProgressIndicator()))
         : Scaffold(
       appBar: AppBar(
-        //automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         title: const Text(StringConstant.log_in_title),
         centerTitle: true,
       ),
@@ -147,24 +143,7 @@ class _loginViewState extends State<loginView> {
     isLoading = true;
     setState(() {});
     Future.delayed(const Duration(seconds: 0)).then((_) {
-      AuthRepositoryImpl.shared.login(email, password).then((value) async {
-        AuthModel user = AuthModel.fromJson(jsonDecode(value));
-        if (user.code == 200) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString(StringConstant.key_token, user.token!);
-          prefs.setBool(StringConstant.is_login, true);
-          _authProvider.updateLoginStatus();
-          Future.delayed(const Duration(seconds: 1));
-          if (context.mounted) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MainView()));
-          }
-        } else {
-          AppShowToast.showToast(StringConstant.login_incorrect);
-        }
-        isLoading = false;
-        setState(() {});
-      });
+      _presenter.login(email, password);
     });
   }
   
@@ -180,5 +159,24 @@ class _loginViewState extends State<loginView> {
         context,
         MaterialPageRoute(builder: (context) => const RegisterView())
     );
+  }
+
+  @override
+  void onLoginComplete() {
+    _authProvider.updateLoginStatus();
+    Future.delayed(const Duration(seconds: 1));
+    if (context.mounted) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const MainView()));
+    }
+    isLoading = false;
+    setState(() {});
+  }
+
+  @override
+  void onLoginError(String messages) {
+    AppShowToast.showToast(messages);
+    isLoading = false;
+    setState(() {});
   }
 }
