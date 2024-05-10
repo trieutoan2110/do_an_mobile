@@ -39,13 +39,11 @@ class ProductInforWidget extends StatefulWidget {
 
 class _ProductInforWidgetState extends State<ProductInforWidget> {
   InforProvider? _provider;
-  String orderID = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _provider = Provider.of<InforProvider>(context, listen: false);
-    orderID = _provider!.listOrderIDByProductToPay[widget.index];
   }
 
   @override
@@ -110,6 +108,7 @@ class _ProductInforWidgetState extends State<ProductInforWidget> {
                           AppShowToast.showAlert(context, 'Alert',
                               'Do you want to cancel your order?', 'Yes', 'Cancel',
                                   () {
+                            String orderID = _provider!.listOrderIDByProductToPay[widget.index];
                             _provider!.cancel(orderID);
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
                                   },
