@@ -263,6 +263,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
               RatingBar.builder(
                 initialRating: rate,
                 direction: Axis.horizontal,
+                ignoreGestures: true,
                 itemCount: 5,
                 itemSize: 25,
                 itemBuilder: (context, index) {
