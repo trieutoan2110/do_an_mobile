@@ -31,6 +31,7 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
   double subTotal = 0;
   double discountTotal = 0;
   double totalPayment = 0;
+  int discountPercent = 0;
   late CheckOutProvider _checkOutProvider;
   late AuthProvider _authProvider;
   CheckOutSuccessPresenter? _presenter;
@@ -160,7 +161,8 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
           ],
           onSelected: (value) {
             calTotalPayment();
-            discountTotal = totalPayment * value! / 100;
+            discountPercent = value!;
+            discountTotal = totalPayment * value/ 100;
             totalPayment -= discountTotal;
             for (var discount in _checkOutProvider.listDiscount) {
               if (discount.discountPercent == value) {
@@ -181,7 +183,7 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
         child: DropdownMenu(
           dropdownMenuEntries: const [
             DropdownMenuEntry(value: PaymentMethod.paypal, label: StringConstant.paypal),
-            DropdownMenuEntry(value: PaymentMethod.paypal, label: StringConstant.onDelivery)
+            DropdownMenuEntry(value: PaymentMethod.onDelivery, label: StringConstant.onDelivery)
           ],
           onSelected: (value) {
             setState(() {
@@ -277,7 +279,7 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
       Map<String, dynamic> item = {
         "name": product.titleProduct,
         "quantity": product.quantity,
-        "price": product.price,
+        "price": product.price - product.price*discountPercent/100,
         "currency": "USD"
       };
       items.add(item);
