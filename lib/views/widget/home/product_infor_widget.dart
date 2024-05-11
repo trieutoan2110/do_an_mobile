@@ -105,7 +105,7 @@ class _ProductInforWidgetState extends State<ProductInforWidget> {
                     } else {
                       if (widget.isRate) {
                         if (widget.isCancel) {
-                          AppShowToast.showAlert(context, 'Alert',
+                          AppShowToast.showAlert(context, 'Cancel Order',
                               'Do you want to cancel your order?', 'Yes', 'Cancel',
                                   () {
                             String orderID = _provider!.listOrderIDByProductToPay[widget.index];

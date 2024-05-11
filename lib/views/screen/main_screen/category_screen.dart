@@ -1,5 +1,7 @@
 import 'package:do_an_mobile/providers/home_provider.dart';
 import 'package:do_an_mobile/views/screen/main_screen/product_detail_screen.dart';
+import 'package:do_an_mobile/views/widget/empty_widget.dart';
+import 'package:do_an_mobile/views/widget/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,12 +20,17 @@ class CategoryView extends StatefulWidget {
 class _CategoryViewState extends State<CategoryView> {
 
   late HomeProvider _provider;
+  CircleLoading? _loading;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _provider = Provider.of<HomeProvider>(context, listen: false);
+    _loading = CircleLoading();
+    if (_provider.isLoading) {
+      _loading!.show(context);
+    }
     _provider.resetListProductInCart();
     _provider.getProductFromCategory(widget.categoryParent);
   }
@@ -36,10 +43,19 @@ class _CategoryViewState extends State<CategoryView> {
     );
   }
 
+  @override
+  void dispose() {
+    _provider.setLoading(true);
+    super.dispose();
+  }
+
   Widget listProduct() {
     return Consumer<HomeProvider>(builder: (context, homeProvider, child) {
+      if (!_provider.isLoading) {
+        _loading!.hide();
+      }
       return homeProvider.listProductInCategory.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const EmptyWidget()
           : GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

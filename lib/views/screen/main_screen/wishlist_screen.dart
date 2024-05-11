@@ -71,7 +71,7 @@ class _WishlistViewState extends State<WishlistView> implements FavoriteViewCont
               _clickDetailProduct(productID);
             },
             onLongPress: () {
-              AppShowToast.showAlert(context, 'Alert',
+              AppShowToast.showAlert(context, 'Delete',
                   'Do you want delete product from wishlist?', 'Yes', 'Cancel',
                       () {
                 _presenter!.deleteProductFromWishList(productID);

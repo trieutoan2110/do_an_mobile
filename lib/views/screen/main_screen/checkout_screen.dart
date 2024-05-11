@@ -12,6 +12,7 @@ import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/home_model/checkout_model.dart';
+import 'package:flutter_paypal_checkout/flutter_paypal_checkout.dart';
 
 class CheckOutView extends StatefulWidget {
   const CheckOutView({
@@ -85,6 +86,9 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
               _buildTitle(const Icon(Icons.discount, color: AppColor.ColorMain), StringConstant.voucher),
               _buildDiscount(),
               const Divider(height: 10, thickness: 1, color: Colors.black26),
+              _buildTitle(const Icon(Icons.payment_outlined, color: AppColor.ColorMain), StringConstant.payment_method),
+              _buildPaymentMethod(),
+              const Divider(height: 10, thickness: 1, color: Colors.black26),
               _buildTitle(const Icon(Icons.event_note, color: AppColor.ColorMain), StringConstant.paymet_details),
               _buildPaymentDetail()
             ],
@@ -110,12 +114,7 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
           ),
           InkWell(
             onTap: () {
-              _loading!.show(context);
-              String fullname = _authProvider.userInfor!.username;
-              String phone = _authProvider.userInfor!.phone;
-              String address = addressController.text.isEmpty ? _authProvider.userInfor!.address : addressController.text;
-              setLitsProductCheckOut();
-              _presenter!.checkoutSuccess(fullname, phone, address, discountID, listProduct);
+              CheckoutSuccess();
             }, child: Container (
             margin: const EdgeInsets.only(left:5),
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -176,6 +175,27 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
         ));
   }
 
+  Widget _buildPaymentMethod() {
+    return Container(
+        margin: const EdgeInsets.all(10),
+        child: DropdownMenu(
+          dropdownMenuEntries: const [
+            DropdownMenuEntry(value: PaymentMethod.paypal, label: StringConstant.paypal),
+            DropdownMenuEntry(value: PaymentMethod.paypal, label: StringConstant.onDelivery)
+          ],
+          onSelected: (value) {
+            setState(() {
+              if (value == PaymentMethod.paypal) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => _buildPaypalCheckout()));
+              }
+            });
+          },
+          width: MediaQuery.of(context).size.width - 20,
+          leadingIcon: const Icon(Icons.discount, color: AppColor.ColorMain),
+          hintText: 'Select payment method',
+        ));
+  }
+
   Widget _buildPaymentDetail() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -212,6 +232,59 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
     );
   }
 
+  Widget _buildPaypalCheckout() {
+    return PaypalCheckout(
+      sandboxMode: true,
+      clientId: StringConstant.clientId,
+      secretKey: StringConstant.secretKey,
+      returnURL: "success.snippetcoder.com",
+      cancelURL: "cancel.snippetcoder.com",
+      transactions: [
+        {
+          "amount": {
+            "total": '$totalPayment',
+            "currency": "USD",
+            "details": {
+              "subtotal": '$totalPayment',
+              "shipping": '0',
+              "shipping_discount": 0
+            }
+          },
+          "description": "The payment transaction description.",
+          "item_list": {
+            "items": setItems(),
+          }
+        }
+      ],
+      note: "Contact us for any questions on your order.",
+      onSuccess: (Map params) async {
+        print("onSuccess: $params");
+        CheckoutSuccess();
+      },
+      onError: (error) {
+        print("onError: $error");
+        Navigator.pop(context);
+      },
+      onCancel: () {
+        print('cancelled:');
+      },
+    );
+  }
+
+  List setItems() {
+    List<Map<String, dynamic>> items = [];
+    for (var product in widget.listCheckOut) {
+      Map<String, dynamic> item = {
+        "name": product.titleProduct,
+        "quantity": product.quantity,
+        "price": product.price,
+        "currency": "USD"
+      };
+      items.add(item);
+    }
+    return items;
+  }
+
   Widget _buildTitle(Icon icon, String title) {
     return Container(
       margin: const EdgeInsets.all(10),
@@ -237,6 +310,15 @@ class _CheckOutViewState extends State<CheckOutView> implements CheckOutSuccessV
       subTotal += (product.price * product.quantity);
     }
     setState(() {});
+  }
+
+  void CheckoutSuccess() {
+    _loading!.show(context);
+    String fullname = _authProvider.userInfor!.username;
+    String phone = _authProvider.userInfor!.phone;
+    String address = addressController.text.isEmpty ? _authProvider.userInfor!.address : addressController.text;
+    setLitsProductCheckOut();
+    _presenter!.checkoutSuccess(fullname, phone, address, discountID, listProduct);
   }
 
   void setLitsProductCheckOut() {

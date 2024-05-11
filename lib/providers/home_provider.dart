@@ -83,15 +83,23 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
     });
   }
-  
+
+  bool _isloading = true;
+  bool get isLoading => _isloading;
+
   Future getProductFromCategory(String categoryParent) async {
     ProductRepositoryImpl.shared.getProductFormCategory(categoryParent).then((value) {
       CategoryModel categoryModel = CategoryModel.fromJson(jsonDecode(value));
       _listProductInCategory = categoryModel.products;
+      _isloading = false;
       notifyListeners();
     }).catchError((onError) {
       AppShowToast.showToast(onError.toString());
     });
+  }
+
+  void setLoading(loading) {
+    _isloading = loading;
   }
 
   void resetListProductInCart() {

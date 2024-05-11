@@ -1,4 +1,9 @@
 class StringConstant {
+  //paypal
+  static const String clientId = "AUrlDpVCCSbhSfiF716Rdql0Ro2dGdwvQJ7Nln0FWjK87vKUcKTK6zF14GyBSBXtwcIEw2EOmJTZnPC0";
+  static const String secretKey = "EOoCUqLTjYXsb2mMArUsIQuhPadYUklgoaXw0XxodJUratMM-2AAQsY3GP68lO6TS9cZv5abAWju3bRE";
+
+
   //SharedPreferences
   static const String key_token = 'token';
   static const String is_login = 'isLogin';
@@ -60,6 +65,7 @@ class StringConstant {
   static const String quantity = 'Quantity';
   static const String delivery_address = 'Delivery Address';
   static const String voucher = 'Voucher';
+  static const String payment_method = 'Payment Method';
   static const String paymet_details = 'Payment Details';
   static const String total_payment = 'Total Payment';
   static const String place_order = 'Place Order';
@@ -81,4 +87,12 @@ class StringConstant {
 
   static const String delivery_process = 'Delivery process';
   static const String order_success = 'Order Success';
+
+  static const String paypal = 'Paypal';
+  static const String onDelivery = 'on Delivery';
+}
+
+enum PaymentMethod {
+  paypal,
+  onDelivery
 }
