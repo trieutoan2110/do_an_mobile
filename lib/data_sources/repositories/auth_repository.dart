@@ -52,7 +52,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<String> register(String fullname, String email, String password) async {
     String url = '$domainName$registerEP';
     final Map<String, dynamic> body = {
-      'fullname': fullname,
+      'fullName': fullname,
       'email': email,
       'password': password
     };
