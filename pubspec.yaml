@@ -54,9 +54,10 @@ dependencies:
   flutter_paypal_checkout: ^1.0.1
 
 flutter_icons:
-  android: "launcher_icon"
+  android: true
   ios: true
-  image_path: "assets/icons/"
+  image_path: "assets/images/logo_v2.png"
+  adaptive_icon_foreground: "assets/images/1024.png"
   min_sdk_android: 21
 
 dev_dependencies:
