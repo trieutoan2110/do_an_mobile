@@ -57,11 +57,17 @@ class StringConstant {
   static const String product_best_sellers_title = 'Product best seller';
   static const String product_best_rates_title = 'Product best rate';
   static const String product_featureds_title = 'Product Featured';
+  static const String my_purchase = 'My Purchases';
+  static const String alert_delete_product_from_wishlist = 'Do you want delete product from wishlist?';
+  static const String delete = 'Delete';
 
   static const String buy_button_title = 'Buy now';
   static const String description = 'Description';
   static const String feedback = 'Feedback';
   static const String rate = 'Rate';
+  static const String rating = 'Rating';
+  static const String filter = 'Filter';
+  static const String price = 'Price';
   static const String quantity = 'Quantity';
   static const String delivery_address = 'Delivery Address';
   static const String voucher = 'Voucher';
@@ -71,6 +77,7 @@ class StringConstant {
   static const String place_order = 'Place Order';
   static const String submit = 'Submit';
   static const String product_quantity = 'Product Quantity';
+
   static const String terrible = 'Terrible';
   static const String poor = 'Poor';
   static const String fair = 'Fair';

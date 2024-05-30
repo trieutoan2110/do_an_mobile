@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:do_an_mobile/data_sources/repositories/app_repository.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:do_an_mobile/data_sources/repositories/auth_repository.dart';
-import 'package:do_an_mobile/models/home_model/history_purchase_model.dart';
 import 'package:do_an_mobile/models/user_infor_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
@@ -70,10 +68,9 @@ class EditProfilePresenter {
     prefs.setString(StringConstant.email, email);
   }
 
-  Future imagePicker() async {
+  Future<String> imagePicker() async {
     Uint8List img = await pickImage(ImageSource.gallery);
     final documentDirectory = await getApplicationCacheDirectory();
-
     final file = File('${documentDirectory.path}/avt.png');
     await file.writeAsBytes(img);
     return file.path;

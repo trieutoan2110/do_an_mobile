@@ -43,11 +43,13 @@ State<EditProfileView> implements EditProfileViewContract{
     usernameController.setText(_infor!.username);
     addressController.setText(_infor!.address);
     phoneController.setText(_infor!.phone);
-    getAvatar();
+    print('a');
   }
   
   void getAvatar() async {
-    avatar = await _presenter!.getAvatar();
+    avatar = await _presenter!.imagePicker();
+    setState(() {
+    });
   }
 
   @override
@@ -65,10 +67,7 @@ State<EditProfileView> implements EditProfileViewContract{
               children: [
                 InkWell(
                   onTap: () async {
-                    await _presenter!.imagePicker();
                     getAvatar();
-                    setState(() {
-                    });
                   },
                   child: Center(
                     child: ClipOval(

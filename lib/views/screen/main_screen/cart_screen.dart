@@ -46,7 +46,7 @@ class _CartViewState extends State<CartView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _loading!.hide();
     if (isChanged) {
       // cartProvider.resetListProductCart();
     }

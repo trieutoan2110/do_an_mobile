@@ -87,22 +87,28 @@ class HomeProvider extends ChangeNotifier {
   bool _isloading = true;
   bool get isLoading => _isloading;
 
-  Future getProductFromCategory(String categoryParent) async {
-    ProductRepositoryImpl.shared.getProductFormCategory(categoryParent).then((value) {
-      CategoryModel categoryModel = CategoryModel.fromJson(jsonDecode(value));
-      _listProductInCategory = categoryModel.products;
-      _isloading = false;
-      notifyListeners();
-    }).catchError((onError) {
-      AppShowToast.showToast(onError.toString());
-    });
+  // Future getProductFromCategory(String categoryParent) async {
+  //   ProductRepositoryImpl.shared.getProductFormCategory(categoryParent).then((value) {
+  //     CategoryModel categoryModel = CategoryModel.fromJson(jsonDecode(value));
+  //     _listProductInCategory = categoryModel.products;
+  //     _isloading = false;
+  //     notifyListeners();
+  //   }).catchError((onError) {
+  //     AppShowToast.showToast(onError.toString());
+  //     _isloading = false;
+  //     notifyListeners();
+  //   });
+  // }
+  void setListProductInCategory(List<NewProduct> list) {
+    _listProductInCategory.addAll(list);
+    notifyListeners();
   }
 
   void setLoading(loading) {
     _isloading = loading;
   }
 
-  void resetListProductInCart() {
+  void resetListProductInCategory() {
     _listProductInCategory.clear();
   }
 
@@ -122,10 +128,8 @@ class HomeProvider extends ChangeNotifier {
         .addProductInListFavorite(productID).then((value) {
       historyPurchase.FeedbackModel model = historyPurchase.FeedbackModel.fromJson(jsonDecode(value));
       AppShowToast.showToast(model.message);
-      print(model.message);
     }).catchError((onError) {
       AppShowToast.showToast(onError.toString());
-      print(onError);
     });
   }
 }

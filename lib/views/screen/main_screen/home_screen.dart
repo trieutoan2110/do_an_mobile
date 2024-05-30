@@ -188,6 +188,8 @@ class _HomeViewState extends State<HomeView> {
                 int discount = productFeatured.discountPercent;
                 String title = productFeatured.title;
                 int buyed = productFeatured.buyed;
+                double rate = productFeatured.rate;
+                int normalPrice = productFeatured.newGroup[0].price;
                 return InkWell(
                   onTap: () {
                     _clickDetailProduct(productID);
@@ -198,6 +200,7 @@ class _HomeViewState extends State<HomeView> {
                     discount: '-$discount%',
                     description: title,
                     buyed: buyed,
+                    rate: rate, normalPrice: '\$$normalPrice',
                   ),
                 );
               },
@@ -254,15 +257,10 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _clickDetailProduct(String productID) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // bool isLogin = false;
-    // if (prefs.getBool(StringConstant.is_login) != null) {
-    //   isLogin = prefs.getBool(StringConstant.is_login)!;
-    // }
     bool isLogin = authProvider!.isLogin;
     await Future.delayed(const Duration(seconds: 0));
     if (context.mounted) {
-      if (isLogin) {
+      // if (isLogin) {
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -270,38 +268,34 @@ class _HomeViewState extends State<HomeView> {
                   ProductDetailView(
                       productID: productID),
             ));
-      } else {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const loginView()
-            ));
-      }
+      // } else {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => const loginView()
+      //       ));
+      // }
     }
   }
 
   void _clickCategory(String id, String title) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLogin = false;
-    if (prefs.getBool(StringConstant.is_login) != null) {
-      isLogin = prefs.getBool(StringConstant.is_login)!;
-    }
+    bool isLogin = authProvider!.isLogin;
     await Future.delayed(const Duration(seconds: 0));
     if (context.mounted) {
-      if (isLogin) {
+      // if (isLogin) {
         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) =>
                   CategoryView(categoryParent: id, categoryTitle: title),
             ));
-      } else {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const loginView()
-            ));
-      }
+      // } else {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => const loginView()
+      //       ));
+      // }
     }
   }
 }

@@ -24,7 +24,7 @@ class ProductBestRateWidget extends StatelessWidget {
       decoration: BoxDecoration (
           border: Border.all(
               color: Colors.black45, width: 0.8
-          )
+          ),
       ),
       child: Stack (
         children: [

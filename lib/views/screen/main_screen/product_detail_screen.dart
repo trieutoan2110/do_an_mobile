@@ -1,4 +1,5 @@
 import 'package:do_an_mobile/core/app_colors.dart';
+import 'package:do_an_mobile/providers/AuthProvider.dart';
 import 'package:do_an_mobile/providers/home_provider.dart';
 import 'package:do_an_mobile/views/screen/main_screen/buy_product_screen.dart';
 import 'package:do_an_mobile/views/widget/loading_widget.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data_sources/constants.dart';
 import '../../../models/home_model/product_detail_model.dart';
+import '../auth_screen/login_view.dart';
 
 class ProductDetailView extends StatefulWidget {
   const ProductDetailView({super.key,
@@ -31,12 +33,14 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   late String imageUrl;
   late String titleProduct;
   late HomeProvider _homeProvider;
+  late AuthProvider authProvider;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    authProvider = Provider.of<AuthProvider>(context, listen: false);
     getDataDetail();
   }
 
@@ -186,7 +190,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         children: [
           InkWell(
             onTap: () {
-              _homeProvider.addProductToWishList(widget.productID);
+              _addToWishList();
             },
             child: Container(
               height: 60,
@@ -282,15 +286,43 @@ class _ProductDetailViewState extends State<ProductDetailView> {
     );
   }
 
-  void selectProductType() {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return SizedBox(
-            height: MediaQuery.of(context).size.height / 4 * 3,
-            child: BuyProductScreen(listGroup: _listGroup, imageUrl: imageUrl, titleProduct: titleProduct, productID: widget.productID,));
-      },
-    );
+  Future<void> selectProductType() async {
+    bool isLogin = authProvider.isLogin;
+    await Future.delayed(const Duration(seconds: 0));
+    if (context.mounted) {
+      if (isLogin) {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (context) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height / 4 * 3,
+                child: BuyProductScreen(listGroup: _listGroup, imageUrl: imageUrl, titleProduct: titleProduct, productID: widget.productID,));
+          },
+        );
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const loginView()
+            ));
+      }
+    }
+  }
+
+  Future<void> _addToWishList() async {
+    bool isLogin = authProvider.isLogin;
+    await Future.delayed(const Duration(seconds: 0));
+    if (context.mounted) {
+      if (isLogin) {
+        _homeProvider.addProductToWishList(widget.productID);
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const loginView()
+            ));
+      }
+    }
   }
 }

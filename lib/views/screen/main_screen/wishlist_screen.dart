@@ -1,4 +1,5 @@
 import 'package:do_an_mobile/core/app_showtoast.dart';
+import 'package:do_an_mobile/data_sources/constants.dart';
 import 'package:do_an_mobile/presenters/favorite_presenter.dart';
 import 'package:do_an_mobile/providers/favorite_product_provider.dart';
 import 'package:do_an_mobile/views/screen/main_screen/product_detail_screen.dart';
@@ -34,6 +35,12 @@ class _WishlistViewState extends State<WishlistView> implements FavoriteViewCont
     _loading!.show(context);
     _presenter!.getListFavoriteProduct();
   }
+
+  @override
+  void dispose() {
+    _loading!.hide();
+    super.dispose();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -66,13 +73,15 @@ class _WishlistViewState extends State<WishlistView> implements FavoriteViewCont
           int discount = product.discountPercent;
           String title = product.title;
           int buyed = product.buyed;
+          double rate = product.rate;
+          int normalPrice = product.newGroup[0].price;
           return InkWell(
             onTap: () {
               _clickDetailProduct(productID);
             },
             onLongPress: () {
-              AppShowToast.showAlert(context, 'Delete',
-                  'Do you want delete product from wishlist?', 'Yes', 'Cancel',
+              AppShowToast.showAlert(context, StringConstant.delete,
+                  StringConstant.alert_delete_product_from_wishlist, 'Yes', 'Cancel',
                       () {
                 _presenter!.deleteProductFromWishList(productID);
                 Navigator.pop(context);
@@ -86,6 +95,7 @@ class _WishlistViewState extends State<WishlistView> implements FavoriteViewCont
               discount: '-$discount%',
               description: title,
               buyed: buyed,
+              rate: rate, normalPrice: '\$$normalPrice',
             ),
           );
         },
