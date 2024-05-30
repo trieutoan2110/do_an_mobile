@@ -22,7 +22,7 @@ class LoginPresenter {
       AuthModel authModel = AuthModel.fromJson(jsonDecode(value));
       if (authModel.code == 200) {
         _setUserInfor(
-            authModel.token!,
+            authModel.token,
             authModel.user!.fullName,
             authModel.user!.avatar,
             authModel.user!.phone,
@@ -34,22 +34,20 @@ class LoginPresenter {
       } else {
         _view!.onLoginError(authModel.message);
       }
-    }).catchError((onError) {
-      _view!.onLoginError(onError.toString());
     });
   }
 
   Future _setUserInfor(
-      String token, String username,
-      String avatar, String phone,
-      String ranking, String address, String email) async {
+      String? token, String? username,
+      String? avatar, String? phone,
+      String? ranking, String? address, String? email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(StringConstant.key_token, token);
-    prefs.setString(StringConstant.phone_number, phone);
-    prefs.setString(StringConstant.username, username);
-    prefs.setString(StringConstant.address, address);
-    prefs.setString(StringConstant.ranking, ranking);
-    prefs.setString(StringConstant.avatarUrl, avatar);
-    prefs.setString(StringConstant.email, email);
+    prefs.setString(StringConstant.key_token, token ?? '');
+    prefs.setString(StringConstant.phone_number, phone?? '');
+    prefs.setString(StringConstant.username, username?? '');
+    prefs.setString(StringConstant.address, address?? '');
+    prefs.setString(StringConstant.ranking, ranking?? '');
+    prefs.setString(StringConstant.avatarUrl, avatar?? '');
+    prefs.setString(StringConstant.email, email?? '');
   }
 }

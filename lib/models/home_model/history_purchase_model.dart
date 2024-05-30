@@ -1,16 +1,24 @@
 class HistoryPurchaseModel {
-  List<HistoryPurchase> historyPurchase;
+  int? code;
+  String? message;
+  List<HistoryPurchase>? historyPurchase;
 
   HistoryPurchaseModel({
-    required this.historyPurchase,
+    this.code,
+    this.message,
+    this.historyPurchase,
   });
 
   factory HistoryPurchaseModel.fromJson(Map<String, dynamic> json) => HistoryPurchaseModel(
-    historyPurchase: List<HistoryPurchase>.from(json["historyPurchase"].map((x) => HistoryPurchase.fromJson(x))),
+    code: json["code"],
+    message: json["message"],
+    historyPurchase: json["historyPurchase"] == null ? [] : List<HistoryPurchase>.from(json["historyPurchase"]!.map((x) => HistoryPurchase.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "historyPurchase": List<dynamic>.from(historyPurchase.map((x) => x.toJson())),
+    "code": code,
+    "message": message,
+    "historyPurchase": historyPurchase == null ? [] : List<dynamic>.from(historyPurchase!.map((x) => x.toJson())),
   };
 }
 

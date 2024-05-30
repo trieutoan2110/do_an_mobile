@@ -49,7 +49,7 @@ class InforProvider extends ChangeNotifier {
     _isLoading = true;
     HistoryPurchaseRepositoryImpl.shared.getHistoryPurchase().then((value) {
       _historyPurchaseModel = HistoryPurchaseModel.fromJson(jsonDecode(value));
-      _listHistoryPurchase = _historyPurchaseModel!.historyPurchase;
+      _listHistoryPurchase = _historyPurchaseModel!.historyPurchase!;
       setListHistoryPurchase();
       _isLoading = false;
       notifyListeners();

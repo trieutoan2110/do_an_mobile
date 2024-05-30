@@ -32,8 +32,8 @@ class User {
   String email;
   String password;
   String token;
-  String phone;
-  String avatar;
+  String? phone;
+  String? avatar;
   String status;
   String roleId;
   String rank;
@@ -46,8 +46,8 @@ class User {
     required this.email,
     required this.password,
     required this.token,
-    required this.phone,
-    required this.avatar,
+    this.phone,
+    this.avatar,
     required this.status,
     required this.roleId,
     required this.rank,

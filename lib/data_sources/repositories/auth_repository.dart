@@ -8,6 +8,7 @@ abstract class AuthRepository {
   Future<String> register(String fullname, String email, String password);
   Future<String> forgotEmail(String email);
   Future<String> forgotOtp(String email, String otp);
+  Future<String> resetPassword(String email, String password);
   Future<String> editProfile(String email, String username, String address, String phone, String imageUrl);
   Future<String> uploadImage(String avatarUrl);
 }
@@ -125,6 +126,22 @@ class AuthRepositoryImpl extends AuthRepository {
         .timeout(const Duration(seconds: 10))
         .then((http.Response response) {
       return response.body;
+    });
+  }
+
+  @override
+  Future<String> resetPassword(String email, String password) {
+    String url = '$domainName$forgotResetEP';
+    Map<String, dynamic> body = {
+      'email': email,
+      'password': password
+    };
+
+    return AppRespository.shared.
+    sendRequest(RequestMethod.patch, url, false, body: body)
+        .timeout(const Duration(seconds: 15))
+        .then((http.Response response) {
+          return response.body;
     });
   }
 }

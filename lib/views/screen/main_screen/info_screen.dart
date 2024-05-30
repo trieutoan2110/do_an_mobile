@@ -248,9 +248,7 @@ class _InformationViewState extends State<InformationView> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const HistoryPurchaseScreen())
-                        );
+                        _navigatorHistoryPurchase();
                       },
                       child: const Text('View Purchase History', style: TextStyle(
                         fontSize: 13
@@ -265,9 +263,7 @@ class _InformationViewState extends State<InformationView> {
           const SizedBox(height: 20),
           InkWell(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const HistoryPurchaseScreen())
-              );
+              _navigatorHistoryPurchase();
             },
             child: Row (
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -301,6 +297,18 @@ class _InformationViewState extends State<InformationView> {
         Text(title, style: const TextStyle (fontWeight: FontWeight.w500, fontSize: 15),)
       ],
     );
+  }
+
+  void _navigatorHistoryPurchase() {
+    if (_authProvider.isLogin) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const HistoryPurchaseScreen())
+      );
+    } else {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const loginView())
+      );
+    }
   }
 
   bool _checkListLength(List list) {

@@ -7,6 +7,7 @@ const String registerEP = 'account/register';
 const String logoutEP = 'account/logout';
 const String forgotOTPEP = 'account/forgot/otp';
 const String forgotEmailEP = 'account/forgot/email';
+const String forgotResetEP = 'account/forgot/reset';
 const String uploadImageEP = 'account/uploadImage';
 const String editProfileEP = 'account/edit';
 

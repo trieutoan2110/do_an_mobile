@@ -33,38 +33,44 @@ class ProductFeaturedWidget extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image.network(imageUrl,fit: BoxFit.cover),
+              Image.network(imageUrl,height: 150,width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
               const SizedBox(height: 5),
-              Text(description,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: const TextStyle (
-                  fontSize: 13
+              Container(
+                margin: const EdgeInsets.all(3),
+                child: Text(description,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: const TextStyle (
+                    fontSize: 13
+                  ),
                 ),
               ),
-              Row(
-                children: [
-                  Text(price,
-                    style: const TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16
+              Container(
+                margin: const EdgeInsets.only(left: 3),
+                child: Row(
+                  children: [
+                    Text(price,
+                      style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(normalPrice,
-                    style: const TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        decoration: TextDecoration.lineThrough
+                    const SizedBox(width: 5),
+                    Text(normalPrice,
+                      style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          decoration: TextDecoration.lineThrough
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
-                padding: const EdgeInsets.only(left: 5, right: 5),
+                padding: const EdgeInsets.only(right: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
