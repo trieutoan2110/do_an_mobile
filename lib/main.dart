@@ -1,3 +1,5 @@
+import 'package:do_an_mobile/core/dependency_injection.dart';
+import 'package:do_an_mobile/core/network_monitor.dart';
 import 'package:do_an_mobile/providers/AuthProvider.dart';
 import 'package:do_an_mobile/providers/cart_provider.dart';
 import 'package:do_an_mobile/providers/checkout_provider.dart';
@@ -10,6 +12,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
+  DependencyInjection.init();
 }
 
 class MyApp extends StatelessWidget {

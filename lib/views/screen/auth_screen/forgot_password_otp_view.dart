@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:do_an_mobile/core/app_showtoast.dart';
 import 'package:do_an_mobile/models/auth_model.dart';
-import 'package:do_an_mobile/views/screen/auth_screen/login_view.dart';
+import 'package:do_an_mobile/views/screen/auth_screen/change_password_view.dart';
 import 'package:do_an_mobile/views/widget/auth_btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
@@ -73,7 +73,7 @@ class _ForgotOtpViewState extends State<ForgotOtpView> {
         if (auth.code == 200) {
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const loginView())
+              MaterialPageRoute(builder: (context) => ChangePasswordView(email: widget.email,))
           );
         } else {
           AppShowToast.showToast(auth.message);

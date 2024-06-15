@@ -22,19 +22,25 @@ class CircleLoading {
 
   OverlayEntry _createdProgressEntry(BuildContext context) => OverlayEntry(
       builder: (BuildContext context) => Stack(
-        children: <Widget>[
-          Container(
-            color: Colors.black.withOpacity(0.3),
-          ),
-          Center(
-            // child: LoadingAnimationWidget.flickr(
-            //     leftDotColor: AppColor.ColorMain,
-            //     rightDotColor: Colors.white,
-            //     size: 70),
-            child: LoadingAnimationWidget.discreteCircle(color: AppColor.ColorMain.withOpacity(0.5), size: 50),
-          )
-        ],
-      ));
+            children: <Widget>[
+              Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
+              // IgnorePointer(
+              //     child: Scaffold(
+              //   backgroundColor: Colors.black.withOpacity(0.3),
+              //   bottomNavigationBar: Container(),
+              // )),
+              Center(
+                // child: LoadingAnimationWidget.flickr(
+                //     leftDotColor: AppColor.ColorMain,
+                //     rightDotColor: Colors.white,
+                //     size: 70),
+                child: LoadingAnimationWidget.discreteCircle(
+                    color: AppColor.ColorMain.withOpacity(0.5), size: 50),
+              )
+            ],
+          ));
 
   double screenHeight(BuildContext context) =>
       MediaQuery.of(context).size.height;

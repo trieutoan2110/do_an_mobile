@@ -16,7 +16,7 @@ class HistoryPurchaseScreen extends StatefulWidget {
 class _HistoryPurchaseScreenState extends State<HistoryPurchaseScreen> {
   late InforProvider inforProvider;
 
-  String statusRate = 'Terrible';
+  String statusRate = StringConstant.terrible;
   double rate = 0;
 
   @override
@@ -37,7 +37,7 @@ class _HistoryPurchaseScreenState extends State<HistoryPurchaseScreen> {
         length: 6,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('My Purchases'),
+            title: const Text(StringConstant.my_purchase),
             bottom: const TabBar(
               isScrollable: true,
               physics: AlwaysScrollableScrollPhysics(),
@@ -76,18 +76,17 @@ class _HistoryPurchaseScreenState extends State<HistoryPurchaseScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               Product product = list[index];
-              return Container(
-                  child: ProductInforWidget(
-                productID: product.productId,
-                title: product.inforProduct.title,
-                imageUrl: product.inforProduct.images[0],
-                quantity: product.quantity,
-                price: product.inforProduct.productChild.priceNew,
-                childTitle: product.childTitle,
-                isRate: isRate,
-                isCancel: isCancel,
-                isBuyAgain: isBuyAgain, index: index,
-              ));
+              return ProductInforWidget(
+                              productID: product.productId,
+                              title: product.inforProduct.title,
+                              imageUrl: product.inforProduct.images[0],
+                              quantity: product.quantity,
+                              price: product.inforProduct.productChild.priceNew,
+                              childTitle: product.childTitle,
+                              isRate: isRate,
+                              isCancel: isCancel,
+                              isBuyAgain: isBuyAgain, index: index,
+                            );
             },
           );
   }

@@ -84,7 +84,7 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<String> getProductFormCategory(String categoryParent) {
     String url = '$domainName$categoryEP$categoryParent';
     return AppRespository.shared
-        .sendRequest(RequestMethod.get, url, true)
+        .sendRequest(RequestMethod.get, url, false)
         .timeout(const Duration(seconds: 10))
         .then((http.Response response) {
        return response.body;

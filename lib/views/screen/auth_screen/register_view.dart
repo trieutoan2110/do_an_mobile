@@ -133,9 +133,23 @@ class _RegisterViewState extends State<RegisterView> {
             .then((value) {
            AuthModel auth = AuthModel.fromJson(jsonDecode(value));
            if (auth.code == 200) {
+             // AppShowToast.showToast(auth.message);
              Navigator.push(context,
                MaterialPageRoute(builder: (context) => const loginView())
              );
+             AlertDialog alert = AlertDialog(
+               title: const Text('Success'),
+               content: const Text('Register success'),
+               actions: [
+                 TextButton(onPressed: () {
+               Navigator.push(context,
+                   MaterialPageRoute(builder: (context) => const loginView())
+               );
+                 }, child: Text('Ok'))
+               ],
+             );
+
+             showDialog(context: context, builder: (context) => alert);
            } else {
              AppShowToast.showToast(auth.message);
            }

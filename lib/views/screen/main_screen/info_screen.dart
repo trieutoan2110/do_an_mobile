@@ -42,6 +42,7 @@ class _InformationViewState extends State<InformationView> {
 
   @override
   void dispose() {
+    _loading!.hide();
     super.dispose();
   }
 
@@ -247,9 +248,7 @@ class _InformationViewState extends State<InformationView> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const HistoryPurchaseScreen())
-                        );
+                        _navigatorHistoryPurchase();
                       },
                       child: const Text('View Purchase History', style: TextStyle(
                         fontSize: 13
@@ -262,15 +261,20 @@ class _InformationViewState extends State<InformationView> {
             ),
           ),
           const SizedBox(height: 20),
-          Row (
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildBadge(AppAsset.icon_check_list, 40, StringConstant.to_pay, _inforProvider.listToPay),
-                _buildBadge(AppAsset.icon_box, 40, StringConstant.to_ship, _inforProvider.listToShip),
-                _buildBadge(AppAsset.icon_truck, 40,  StringConstant.to_receive, _inforProvider.listToReceive),
-                _buildBadge(AppAsset.icon_rating, 40, StringConstant.to_rate, _inforProvider.listToRate),
-              ],
-            ),
+          InkWell(
+            onTap: () {
+              _navigatorHistoryPurchase();
+            },
+            child: Row (
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildBadge(AppAsset.icon_check_list, 40, StringConstant.to_pay, _inforProvider.listToPay),
+                  _buildBadge(AppAsset.icon_box, 40, StringConstant.to_ship, _inforProvider.listToShip),
+                  _buildBadge(AppAsset.icon_truck, 40,  StringConstant.to_receive, _inforProvider.listToReceive),
+                  _buildBadge(AppAsset.icon_rating, 40, StringConstant.to_rate, _inforProvider.listToRate),
+                ],
+              ),
+          ),
         ],
       ),
     );
@@ -293,6 +297,18 @@ class _InformationViewState extends State<InformationView> {
         Text(title, style: const TextStyle (fontWeight: FontWeight.w500, fontSize: 15),)
       ],
     );
+  }
+
+  void _navigatorHistoryPurchase() {
+    if (_authProvider.isLogin) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const HistoryPurchaseScreen())
+      );
+    } else {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const loginView())
+      );
+    }
   }
 
   bool _checkListLength(List list) {

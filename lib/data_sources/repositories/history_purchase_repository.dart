@@ -17,7 +17,7 @@ class HistoryPurchaseRepositoryImpl extends HistoryPurchaseRepository {
     String url = '$domainName$historyPurchaseEP';
     return AppRespository.shared
         .sendRequest(RequestMethod.get, url, true)
-        .timeout(const Duration(seconds: 15))
+        // .timeout(const Duration(seconds: 15))
         .then((http.Response response) {
           return response.body;
     });
